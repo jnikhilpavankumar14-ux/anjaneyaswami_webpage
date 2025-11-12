@@ -47,7 +47,7 @@ export default function Navbar() {
     })
 
     return () => subscription.unsubscribe()
-  }, [checkUser])
+  }, [checkUser, checkAdminStatus])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

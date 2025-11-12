@@ -65,7 +65,6 @@ export default function AdminPage() {
         return
       }
       setIsAdmin(true)
-      fetchData()
     } else {
       router.push('/')
     }
@@ -74,20 +73,6 @@ export default function AdminPage() {
   useEffect(() => {
     checkAdmin()
   }, [checkAdmin])
-
-  const fetchData = useCallback(async () => {
-    if (activeTab === 'donations') {
-      await fetchDonations()
-    } else if (activeTab === 'puja') {
-      await fetchPujaEvents()
-    }
-  }, [activeTab, fetchDonations, fetchPujaEvents])
-
-  useEffect(() => {
-    if (isAdmin) {
-      fetchData()
-    }
-  }, [activeTab, isAdmin, fetchData])
 
   const fetchDonations = useCallback(async () => {
     try {
@@ -124,6 +109,20 @@ export default function AdminPage() {
       toast.error('Failed to fetch puja events')
     }
   }, [])
+
+  const fetchData = useCallback(async () => {
+    if (activeTab === 'donations') {
+      await fetchDonations()
+    } else if (activeTab === 'puja') {
+      await fetchPujaEvents()
+    }
+  }, [activeTab, fetchDonations, fetchPujaEvents])
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchData()
+    }
+  }, [activeTab, isAdmin, fetchData])
 
   const exportCSV = () => {
     const headers = ['Date', 'Donor Name', 'Email', 'Phone', 'Amount', 'Payment ID', 'Status']
