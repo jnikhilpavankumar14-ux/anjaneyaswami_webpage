@@ -1,0 +1,71 @@
+═══════════════════════════════════════════════════════════════
+  QUICK DEPLOYMENT TO VERCEL - STEP BY STEP
+═══════════════════════════════════════════════════════════════
+
+YOUR GITHUB REPOSITORY:
+https://github.com/jnikhilpavankumar14-ux/anjaneyaswami_webpage
+
+═══════════════════════════════════════════════════════════════
+STEP 1: SIGN IN TO VERCEL
+═══════════════════════════════════════════════════════════════
+1. Go to: https://vercel.com
+2. Click "Sign Up" or "Log In"
+3. Choose "Continue with GitHub"
+4. Authorize Vercel to access your GitHub account
+
+═══════════════════════════════════════════════════════════════
+STEP 2: IMPORT YOUR PROJECT
+═══════════════════════════════════════════════════════════════
+1. Click "Add New Project" button
+2. You'll see your GitHub repositories
+3. Find: "anjaneyaswami_webpage"
+4. Click "Import" next to it
+
+═══════════════════════════════════════════════════════════════
+STEP 3: CONFIGURE PROJECT (Auto-detected)
+═══════════════════════════════════════════════════════════════
+Vercel will auto-detect:
+  ✓ Framework: Next.js
+  ✓ Build Command: npm run build
+  ✓ Output Directory: .next
+  ✓ Install Command: npm install
+
+Just click "Deploy" to start! (You can add env vars later)
+
+═══════════════════════════════════════════════════════════════
+STEP 4: ADD ENVIRONMENT VARIABLES (Optional for first deploy)
+═══════════════════════════════════════════════════════════════
+After first deployment, go to:
+  Project Settings > Environment Variables
+
+Add these (you can use placeholders for now to test):
+  NEXT_PUBLIC_SUPABASE_URL
+  NEXT_PUBLIC_SUPABASE_ANON_KEY
+  SUPABASE_SERVICE_ROLE_KEY
+  NEXT_PUBLIC_RAZORPAY_KEY_ID
+  RAZORPAY_KEY_SECRET
+  SITE_URL
+  NEXT_PUBLIC_SITE_URL
+
+═══════════════════════════════════════════════════════════════
+STEP 5: YOUR SITE IS LIVE!
+═══════════════════════════════════════════════════════════════
+After deployment (2-3 minutes), you'll get a URL like:
+  https://anjaneyaswami-webpage.vercel.app
+
+Click on it to see your live site!
+
+═══════════════════════════════════════════════════════════════
+QUICK TEST (Minimal Setup)
+═══════════════════════════════════════════════════════════════
+To just see if the site loads, deploy WITHOUT environment 
+variables first. The homepage will load, but features requiring 
+Supabase/Razorpay won't work until you add real credentials.
+
+═══════════════════════════════════════════════════════════════
+NEED HELP?
+═══════════════════════════════════════════════════════════════
+- See DEPLOY_NOW.md for detailed instructions
+- See README.md for full documentation
+- Vercel Docs: https://vercel.com/docs
+
