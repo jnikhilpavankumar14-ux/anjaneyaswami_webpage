@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -39,11 +39,7 @@ export default function AdminPage() {
   const [pujaEvents, setPujaEvents] = useState<PujaEvent[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    checkAdmin()
-  }, [])
-
-  const checkAdmin = async () => {
+  const checkAdmin = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
       router.push('/auth/login?redirect=/admin')
@@ -73,23 +69,27 @@ export default function AdminPage() {
     } else {
       router.push('/')
     }
-  }
+  }, [router])
 
-  const fetchData = async () => {
+  useEffect(() => {
+    checkAdmin()
+  }, [checkAdmin])
+
+  const fetchData = useCallback(async () => {
     if (activeTab === 'donations') {
       await fetchDonations()
     } else if (activeTab === 'puja') {
       await fetchPujaEvents()
     }
-  }
+  }, [activeTab, fetchDonations, fetchPujaEvents])
 
   useEffect(() => {
     if (isAdmin) {
       fetchData()
     }
-  }, [activeTab, isAdmin])
+  }, [activeTab, isAdmin, fetchData])
 
-  const fetchDonations = async () => {
+  const fetchDonations = useCallback(async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
@@ -111,9 +111,9 @@ export default function AdminPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
-  const fetchPujaEvents = async () => {
+  const fetchPujaEvents = useCallback(async () => {
     try {
       const response = await fetch('/api/admin/puja-events')
       if (response.ok) {
@@ -123,7 +123,7 @@ export default function AdminPage() {
     } catch (error) {
       toast.error('Failed to fetch puja events')
     }
-  }
+  }, [])
 
   const exportCSV = () => {
     const headers = ['Date', 'Donor Name', 'Email', 'Phone', 'Amount', 'Payment ID', 'Status']

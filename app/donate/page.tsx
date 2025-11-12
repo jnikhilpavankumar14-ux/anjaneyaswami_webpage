@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -23,18 +23,18 @@ export default function DonatePage() {
   const [loading, setLoading] = useState(false)
   const [razorpayLoaded, setRazorpayLoaded] = useState(false)
 
-  useEffect(() => {
-    checkUser()
-  }, [])
-
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
       router.push('/auth/login?redirect=/donate')
       return
     }
     setUser(session.user)
-  }
+  }, [router])
+
+  useEffect(() => {
+    checkUser()
+  }, [checkUser])
 
   const handleDonate = async () => {
     if (!user) {

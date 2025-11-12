@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
@@ -24,21 +24,7 @@ export default function DashboardPage() {
   const [donations, setDonations] = useState<Donation[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    checkUser()
-  }, [])
-
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      router.push('/auth/login')
-      return
-    }
-    setUser(session.user)
-    fetchDonations(session.user.id)
-  }
-
-  const fetchDonations = async (userId: string) => {
+  const fetchDonations = useCallback(async (userId: string) => {
     try {
       const { data: donor } = await supabase
         .from('donors')
@@ -65,7 +51,21 @@ export default function DashboardPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  const checkUser = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      router.push('/auth/login')
+      return
+    }
+    setUser(session.user)
+    fetchDonations(session.user.id)
+  }, [router, fetchDonations])
+
+  useEffect(() => {
+    checkUser()
+  }, [checkUser])
 
   const downloadReceipt = async (donation: Donation) => {
     if (!donation.receipt_url) {
@@ -103,7 +103,7 @@ export default function DashboardPage() {
 
       {donations.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <p className="text-gray-600 mb-4">You haven't made any donations yet.</p>
+          <p className="text-gray-600 mb-4">You haven&apos;t made any donations yet.</p>
           <a
             href="/donate"
             className="inline-block bg-saffron text-white px-6 py-3 rounded-lg hover:bg-orange-600"
@@ -147,7 +147,7 @@ export default function DashboardPage() {
               )}
 
               {donation.note && (
-                <p className="text-gray-700 mb-4 italic">"{donation.note}"</p>
+                <p className="text-gray-700 mb-4 italic">&quot;{donation.note}&quot;</p>
               )}
 
               {donation.status === 'completed' && donation.receipt_url && (

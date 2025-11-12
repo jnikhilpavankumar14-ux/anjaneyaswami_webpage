@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -19,16 +19,16 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    checkSession()
-  }, [])
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
       router.push(redirect)
     }
-  }
+  }, [router, redirect])
+
+  useEffect(() => {
+    checkSession()
+  }, [checkSession])
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -250,7 +250,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-center mt-4 text-sm text-gray-600">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/auth/signup" className="text-saffron hover:underline">
             Sign up
           </Link>

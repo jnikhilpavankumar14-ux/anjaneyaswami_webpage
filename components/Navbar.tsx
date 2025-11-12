@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
@@ -12,20 +12,7 @@ export default function Navbar() {
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
 
-  useEffect(() => {
-    checkUser()
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        checkAdminStatus(session.user)
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
     setUser(session?.user ?? null)
     if (session?.user) {
@@ -47,7 +34,20 @@ export default function Navbar() {
       const { isAdmin: admin } = await response.json()
       setIsAdmin(admin)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    checkUser()
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        checkAdminStatus(session.user)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [checkUser])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
