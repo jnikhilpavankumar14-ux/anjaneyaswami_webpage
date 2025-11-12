@@ -12,15 +12,7 @@ export default function Navbar() {
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
 
-  const checkUser = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    setUser(session?.user ?? null)
-    if (session?.user) {
-      checkAdminStatus(session.user)
-    }
-  }
-
-  const checkAdminStatus = async (user: any) => {
+  const checkAdminStatus = useCallback(async (user: any) => {
     const email = user.email
     const phone = user.phone
     
@@ -35,6 +27,14 @@ export default function Navbar() {
       setIsAdmin(admin)
     }
   }, [])
+
+  const checkUser = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    setUser(session?.user ?? null)
+    if (session?.user) {
+      checkAdminStatus(session.user)
+    }
+  }, [checkAdminStatus])
 
   useEffect(() => {
     checkUser()
