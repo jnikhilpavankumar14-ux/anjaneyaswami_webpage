@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         .select()
         .single()
 
-      if (donorError) {
+      if (donorError || !newDonor) {
         return NextResponse.json(
           { error: 'Failed to create donor' },
           { status: 500 }
@@ -43,6 +43,14 @@ export async function POST(request: NextRequest) {
       }
 
       donor = newDonor
+    }
+
+    // Ensure donor exists before creating donation
+    if (!donor || !donor.id) {
+      return NextResponse.json(
+        { error: 'Failed to get or create donor' },
+        { status: 500 }
+      )
     }
 
     // Create donation record
